@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./youTubeClone.css"; // Optional, can be removed if all Tailwind
 
 const API_KEY = "AIzaSyD1LT2PSAIefg4CY6_Zq3oZFQaM_MY2QWg";
@@ -14,6 +14,18 @@ const YoutubeClone = () => {
   const [liveComment, setLiveComment] = useState([]);
   const [commentLoading, setCommentLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!selectvideo) return;
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [selectvideo]);
+
+
 
   useEffect(() => {
     axios
@@ -116,8 +128,19 @@ const YoutubeClone = () => {
       });
   }, [selectvideo]);
 
+  useEffect(() => {
+    if (!selectvideo || !containerRef.current) return;
+
+    containerRef.current.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [selectvideo]);
+
   return (
-    <div className={`fixed inset-0 overflow-auto transition-colors duration-500 ${darkMode ? "bg-[#0f0f0f] text-white" : "bg-gray-100 text-black"}`}>
+
+    <div ref={containerRef}
+      className={`fixed inset-0 overflow-auto transition-colors duration-500 ${darkMode ? "bg-[#0f0f0f] text-white" : "bg-gray-100 text-black"}`}>
       <header className="flex justify-between items-center px-6 py-4 shadow-md bg-[#202020] dark:bg-[#181818]">
         <div className="text-2xl font-bold text-red-500">YouTube Clone</div>
         <div className="flex gap-2 items-center">
@@ -131,7 +154,6 @@ const YoutubeClone = () => {
           />
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="bg-gray-800 text-white px-3 py-2 rounded hover:bg-gray-700"
           >
             {darkMode ? "☀️" : "🌙"}
           </button>
@@ -174,9 +196,9 @@ const YoutubeClone = () => {
                     <p>Loading comments...</p>
                   ) : liveComment.length > 0 ? (
                     liveComment.map((comment) => (
-                      <div key={comment.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
-                        <p className="font-semibold text-blue-300">{comment.author}</p>
-                        <p className="text-gray-200 mt-1">{comment.text}</p>
+                      <div key={comment.id} className="bg-gray-300 p-4 rounded-lg shadow-md">
+                        <p className="font-semibold text-blue-800 text-left">{comment.author}</p>
+                        <p className="text-black mt-1 text-left">{comment.text}</p>
                       </div>
                     ))
                   ) : (
@@ -221,7 +243,7 @@ const YoutubeClone = () => {
       </main>
 
       <footer className="text-center py-6 text-gray-400 border-t border-gray-700">
-        © 2025 AQ YouTube Clone
+        © 2025 WebTech YouTube Clone
       </footer>
     </div>
   );
